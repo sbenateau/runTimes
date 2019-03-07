@@ -4,6 +4,7 @@ French below
 
 I recently started to develop tools for [galaxy-E](https://github.com/65MO/Galaxy-E) and I started to ask myself questions on the performance of some functions in R. After discussing with a colleague, I realised that I had never really tested the execution times of some functions that I often use, even thought I had an idea of the ranking that was the result of impressions and discussions with other R users.  
 I performed these performance tests on 3 functions that sum columns and I made the number of columns and rows vary. Then, after a discussion with another colleague, I also made the type of object change (data.frame and matrix).  
+
 Here are the functions I tested and the results:  
 
 ```
