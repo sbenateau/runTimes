@@ -9,11 +9,12 @@
 
 # packages to plot results
 library(ggplot2)
+library(gridExtra)
 library(dplyr)
 library(tidyr)
 
 
-
+#load data
 dataTime <- read.table("runTimes.tsv", sep = "\t", header = TRUE)
 
 dataTime$Function <- relevel(dataTime$Function,"colSums")
@@ -28,66 +29,63 @@ plot1 <- ggplot(dataTime, aes(x = as.factor(Ncol), y = Time))+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-png("runTimes1.png", width = 800, height = 600)
+png("runTimesCompare.png", width = 800, height = 600)
 plot1
 dev.off()
 
-plot2 <- ggplot(dataTime, aes(x = Type, y = Time))+
-  geom_violin(aes(fill = Function))+
-  scale_y_continuous(trans='log10')+
-  labs(x = "Data type")+
-  labs(y = "Execution time")+
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-plot2
-
-#calculate ratios
-dataTime2 <- dataTime %>%
-  select(expr, mean, nrow, ncol) %>%
-  spread(expr,mean) %>%
-  mutate(loopVsApply = loop / apply)  %>%
-  mutate(loopVsColsums = loop / colSums)  %>%
-  mutate(applyVsColsums = apply / colSums)
+#Calculate execution time ratio between functions
+dataTimeSummary <- dataTime %>%
+  group_by(Function,Ncol,Nrow,Type) %>%
+  summarise(meanTime = mean(Time)) %>%
+  spread(Function,meanTime) %>%
+  mutate(loopVScolSums = loop/colSums)%>%
+  mutate(applyVScolSums = apply/colSums)%>%
+  mutate(applyVSloop = apply/loop)
 
 
-plot2 <- ggplot(dataTime2, aes(x = ncol, y = loopVsApply))+
+
+plot1 <- ggplot(dataTimeSummary, aes(x = Ncol, y = applyVSloop))+
   geom_line()+
   geom_hline(yintercept=1, linetype="dashed", 
              color = "red", size=1)+
   geom_point()+
-  scale_x_continuous(trans='log10', labels = function(x) format(x, scientific = TRUE))+
+  scale_x_continuous(trans='log10', 
+                     labels = function(x) format(x, scientific = TRUE))+
   scale_y_continuous(trans='log10')+
-  facet_grid(.~nrow, labeller = label_both) +
+  facet_grid(Type~Nrow, labeller = label_both) +
   labs(x = "Column number in the matrix")+
-  labs(y = "Loop / Apply executation time ratio")+
+  labs(y = "apply / loop execution time ratio")+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-
-plot3 <- ggplot(dataTime2, aes(x = ncol, y = loopVsColsums))+
+plot2 <- ggplot(dataTimeSummary, aes(x = Ncol, y = loopVScolSums))+
   geom_line()+
   geom_hline(yintercept=1, linetype="dashed", 
              color = "red", size=1)+
   geom_point()+
-  scale_x_continuous(trans='log10', labels = function(x) format(x, scientific = TRUE))+
+  scale_x_continuous(trans='log10', 
+                     labels = function(x) format(x, scientific = TRUE))+
   scale_y_continuous(trans='log10')+
-  facet_grid(.~nrow, labeller = label_both) +
+  facet_grid(Type~Nrow, labeller = label_both) +
   labs(x = "Column number in the matrix")+
-  labs(y = "Loop / colSums executation time ratio")+
+  labs(y = "loop / colSums execution time ratio")+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-plot4 <- ggplot(dataTime2, aes(x = ncol, y = applyVsColsums))+
+plot3 <- ggplot(dataTimeSummary, aes(x = Ncol, y = applyVScolSums))+
   geom_line()+
   geom_hline(yintercept=1, linetype="dashed", 
              color = "red", size=1)+
   geom_point()+
-  scale_x_continuous(trans='log10', labels = function(x) format(x, scientific = TRUE))+
+  scale_x_continuous(trans='log10', 
+                     labels = function(x) format(x, scientific = TRUE))+
   scale_y_continuous(trans='log10')+
-  facet_grid(.~nrow, labeller = label_both) +
+  facet_grid(Type~Nrow, labeller = label_both) +
   labs(x = "Column number in the matrix")+
-  labs(y = "Apply / colSums executation time ratio")+
+  labs(y = "apply / colSums execution time ratio")+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-grid.arrange(plot1, plot2, plot3, plot4)
+png("runTimesRatio.png", width = 800, height = 600)
+grid.arrange(plot1, plot2, plot3, ncol = 3)
+dev.off()
