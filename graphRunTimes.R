@@ -27,7 +27,10 @@ plot1 <- ggplot(dataTime, aes(x = as.factor(Ncol), y = Time))+
   labs(y = "Execution time")+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+png("runTimes1.png", width = 800, height = 600)
 plot1
+dev.off()
 
 plot2 <- ggplot(dataTime, aes(x = Type, y = Time))+
   geom_violin(aes(fill = Function))+
