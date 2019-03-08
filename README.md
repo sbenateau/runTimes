@@ -25,7 +25,7 @@ colsums1Loop(x)
 ![Résultats](runTimes.png)
 
 To conclude, the function I expected to be the fastest was most of the time the fastest (phew) but the relative differences between execution times depends on the object. All factors (number of rows, number of columns and object type) had an influence. If that is the case for these 3 functions, it's probably also the case for other functions.
-The tests were performed with the package [microbenshmark](https://cran.r-project.org/web/packages/microbenchmark/index.html).
+The tests were performed with the package [microbenchmark](https://cran.r-project.org/web/packages/microbenchmark/index.html).
 
 # Temps d'exécution de plusieurs fonctions sur des données de différentes tailles
 
