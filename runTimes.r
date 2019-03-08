@@ -33,13 +33,13 @@ combineParameters <- data.frame(type = rep(type, length(row) * length(col)),
 )
 
 # function to calculate the sum of each column in the matrix
-colsums1Loop <- function(x){
-  #empty vector to store data
-  vect <- c()
+colsums1Loop <- function (x) {
+  #preallocate memory:
+  vect <- numeric(ncol(x))
   # loop to sum all columns
-  for (i in 1:ncol(x)){
+  for (i in 1:ncol(x)) {
     #store the sum in the vector
-    vect <- c(vect, sum(x[ ,i]))
+    vect[i] <- sum(x[, i])
   }
   return(vect)
 }
