@@ -48,7 +48,7 @@ colsums1Loop <- function(x){
 colsums1Loop(x)
 
 ```
-![Résultats](runTimes.png)
+![Résultats](runTimesCompare.png)
 
 La conclusion c'est que la fonction que je pensais la plus rapide est presque toujours la plus rapide (ouf) mais les écarts de vitesse d'exécution sont très dépendant de l'objet. Tous les facteurs (nombre de lignes, nombre de colonnes et type d'objet) ont une influence. Si c'est le cas pour ces trois fonctions, il est probable que ce soit égalment le cas pour d'autres fonctions.  
 A l'heure où l'on se pose beaucoup de question sur les ressources de calcul disponibles, je pense qu'il y a également de la place pour ce poser des question sur l'efficacité de nos scripts.
